@@ -5,9 +5,9 @@ This rest API is a lean implementation of the requirements stated, please kindly
 # Requirements
 
 This system is implemented using the Laravel framework and requires the following:
-PHP - v8.1
-Laravel - v10
-MySQL/MariaDB - >= v5/v7
+* PHP - v8.1
+* Laravel - v10
+* MySQL/MariaDB - >= v5/v7
 
 # Installation
 To begin with, copy the `.env.example` file to `.env`
