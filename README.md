@@ -12,7 +12,7 @@ This system is implemented using the Laravel framework and requires the followin
 # Installation
 To begin with, copy the `.env.example` file to `.env`
 
-To install the dependencies, run
+Install the dependencies by running
 
 ```bash
 composer install
@@ -39,6 +39,12 @@ php artisan queue:work
 To check the available endpoints please run
 ```bash
 php artisan route:list
+```
+
+To run test
+
+```bash
+php artisan test
 ```
 
 Thanks.
