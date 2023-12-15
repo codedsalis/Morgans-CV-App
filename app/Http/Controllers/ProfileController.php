@@ -2,45 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ResumeUploadEvent;
+use App\Dto\ResumeUploadDto;
 use App\Http\Requests\UploadCvRequest;
+use App\Interfaces\ProfileServiceInterface;
 use App\Models\Profile;
-use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Smalot\PdfParser\Parser;
-
-use function PHPUnit\Framework\matches;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProfileController extends ApiController
 {
     public function __construct(
-        public readonly Parser $pdfPerser
+        public readonly ProfileServiceInterface $profileService
     ) {
     }
 
-    public function uploadCv(UploadCvRequest $request)
+    public function uploadCv(UploadCvRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Profile::class)) {
             return $this->respond([
                 'status' => 'failed',
-                'message' => 'You are not allowed to create'
-            ]);
+                'message' => 'You are not allowed to create a profile'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $validatedData = $request->validated();
+        $validatedData = ResumeUploadDto::fromRequest($request->validated());
 
-        $path = $request->file('resume')->store('pdfs');
-
-        $file = storage_path('app/' . $path);
-
-        $resume = Profile::query()
-            ->create([
-                'user_id' => $request->user()->id,
-                'cv_path' => $file,
-            ]);
-
-        ResumeUploadEvent::dispatch($resume);
+        $resume = $this->profileService->saveResume($validatedData);
 
         return $this->respond([
             'status' => 'success',
@@ -48,24 +35,22 @@ class ProfileController extends ApiController
         ]);
     }
 
-    public function show($id, Request $request)
+    public function show($id): JsonResponse
     {
-        try {
-            $profile = Profile::query()
-                ->where('id', $id)
-                ->firstOrFail();
+        $resume = $this->profileService->findResume($id);
 
-            return $this->respond([
-                'status' => 'success',
-                'data' => $profile,
-            ]);
-        } catch (ModelNotFoundException $e) {
+        if ($resume === null) {
             return response()->json([
                 'status' => 'failed',
                 'data' => [
-                    'message' => 'The request resume is not found',
+                    'message' => 'The requested resume is not found',
                 ]
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
+
+        return $this->respond([
+            'status' => 'success',
+            'data' => $resume,
+        ]);
     }
 }
