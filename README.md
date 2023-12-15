@@ -36,4 +36,9 @@ To start the queue, run
 php artisan queue:work
 ```
 
+To check the available endpoints please run
+```bash
+php artisan route:list
+```
+
 Thanks.
