@@ -53,17 +53,19 @@ class ProfileController extends ApiController
         try {
             $profile = Profile::query()
                 ->where('id', $id)
-                ->first();
+                ->firstOrFail();
 
             return $this->respond([
                 'status' => 'success',
                 'data' => $profile,
             ]);
         } catch (ModelNotFoundException $e) {
-            return $this->respond([
-                'status' => 'success',
-                'message' => 'The request resume not found',
-            ]);
+            return response()->json([
+                'status' => 'failed',
+                'data' => [
+                    'message' => 'The request resume is not found',
+                ]
+            ], 404);
         }
     }
 }
