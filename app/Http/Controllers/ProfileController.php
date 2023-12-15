@@ -37,11 +37,9 @@ class ProfileController extends ApiController
         ]);
     }
 
-    public function show($id): JsonResponse
+    public function show(string $id): JsonResponse
     {
         $resume = $this->profileService->findResume($id);
-
-        $this->authorize('view', $resume);
 
         if ($resume === null) {
             return response()->json([
@@ -51,6 +49,8 @@ class ProfileController extends ApiController
                 ]
             ], Response::HTTP_NOT_FOUND);
         }
+
+        $this->authorize('view', $resume);
 
         return $this->respond([
             'status' => 'success',

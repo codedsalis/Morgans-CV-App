@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::post('/upload-cv', [ProfileController::class, 'uploadCv'])->name('upload-cv');
-        Route::post('/cv/{id}', [ProfileController::class, 'show'])->name('show-cv');
+        Route::get('/cv/{id}', [ProfileController::class, 'show'])->name('show-cv');
     });
 
     Route::prefix('auth')->controller(AuthenticationController::class)->group(function () {
