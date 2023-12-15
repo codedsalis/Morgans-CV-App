@@ -30,7 +30,6 @@ class ProcessUploadedResume implements ShouldQueue
 
         $text = $pdf->getText();
 
-
         $skillsStart = strpos($text, 'SKILLS');
         $experienceStart = strpos($text, 'EXPERIENCE');
         $educationStart = strpos($text, 'EDUCATION');
@@ -58,20 +57,16 @@ class ProcessUploadedResume implements ShouldQueue
         $cleanedSkills = [];
         $skillsSection = substr($text, $skillsStart, $experienceStart - $skillsStart);
 
-        // Split the skills into an array based on newline characters
         $skillsArray = preg_split('/\\t*\\n/', $skillsSection);
 
         $skillsArray = array_filter($skillsArray, function ($line) {
             return stripos($line, 'SKILLS') === false;
         });
 
-        // Remove empty elements and trim each skill
         $cleanedSkills = array_merge($cleanedSkills, array_map('trim', array_filter($skillsArray)));
 
         $individualSkills = [];
         foreach ($cleanedSkills as $line) {
-            // Customize this part based on the structure of your skills
-            // Here, I'm assuming each line is a separate skill
             $individualSkills[] = $line;
         }
 
@@ -117,12 +112,10 @@ class ProcessUploadedResume implements ShouldQueue
         $cleanedEducation = array_merge($cleanedEducation, array_map('trim', array_filter($educationArray)));
 
         foreach ($educationArray as $line) {
-            // Stop when no bullet point is found
             if (strpos($line, '•') === false) {
                 break;
             }
-            // Customize this part based on the structure of your education section
-            // Here, I'm assuming each line is a separate education
+
             $cleanedEducation[] = $line;
         }
 
