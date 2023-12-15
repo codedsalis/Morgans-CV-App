@@ -21,21 +21,21 @@ class Profile extends Model
     protected function skills(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => json_decode($value),
+            get: fn (?string $value) => $value !== null ? json_decode($value) : $value,
         );
     }
 
     protected function workExperience(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => json_decode($value),
+            get: fn (?string $value) => $value !== null ? json_decode($value) : $value,
         );
     }
 
     protected function education(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => json_decode($value),
+            get: fn (?string $value) => $value !== null ? json_decode($value) : $value,
         );
     }
 }
