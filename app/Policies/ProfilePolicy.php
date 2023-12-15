@@ -27,13 +27,13 @@ class ProfilePolicy
     {
         return $user->id === $profile->user_id
             ? Response::allow()
-            : Response::deny('You are only allowed to modify your resume');
+            : Response::deny('You cannot modify someone else\'s resume');
     }
 
     public function view(User $user, Profile $profile)
     {
         return $user->id === $profile->user_id
             ? Response::allow()
-            : Response::deny('You are only allowed to view your resume');
+            : Response::deny('You cannot view someone else\'s resume');
     }
 }

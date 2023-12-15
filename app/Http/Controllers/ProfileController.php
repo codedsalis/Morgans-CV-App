@@ -27,6 +27,8 @@ class ProfileController extends ApiController
 
         $validatedData = ResumeUploadDto::fromRequest($request->validated());
 
+        $this->authorize('create', Profile::class);
+
         $resume = $this->profileService->saveResume($validatedData);
 
         return $this->respond([
@@ -38,6 +40,8 @@ class ProfileController extends ApiController
     public function show($id): JsonResponse
     {
         $resume = $this->profileService->findResume($id);
+
+        $this->authorize('view', $resume);
 
         if ($resume === null) {
             return response()->json([
